@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Чистильщик диска</title>
+<link rel="icon" href="icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="app.css">
+<script type="importmap">
+{ "imports": { "three": "/vendor/three.module.min.js", "three/addons/": "/vendor/" } }
+</script>
+</head>
+<body>
+<div class="app">
+  <aside class="sidebar">
+    <div class="brand">
+      <img src="icon.svg" alt="" class="brand-icon">
+      <div>
+        <div class="brand-name">Чистильщик</div>
+        <div class="brand-sub" id="brandSub">диска</div>
+      </div>
+    </div>
+    <nav id="nav"></nav>
+    <div class="side-bottom">
+      <button class="side-btn" id="btnWizard"></button>
+      <button class="side-btn" id="btnAdmin"></button>
+      <button class="side-btn danger" id="btnQuit"></button>
+    </div>
+  </aside>
+  <main class="main" id="main"></main>
+</div>
+
+<div class="taskbar" id="taskbar" hidden>
+  <div class="spinner"></div>
+  <div class="task-text">
+    <div class="task-label" id="taskLabel"></div>
+    <div class="task-status" id="taskStatus"></div>
+  </div>
+  <button class="pill-btn" id="btnStop">Стоп</button>
+</div>
+
+<div class="toast-wrap" id="toasts"></div>
+<div class="modal-back" id="modalBack" hidden><div class="modal" id="modal"></div></div>
+
+<script type="module" src="app.js"></script>
+</body>
+</html>

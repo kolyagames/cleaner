@@ -1,0 +1,14 @@
+# личная история очисток и настройки программы
+cleaner_data.json
+cleaner_data.json.tmp
+
+# результаты сборки (собираются командой python build.py)
+portable/Чистильщик диска/
+*.zip
+dist/
+build/
+*.spec
+
+# Python
+__pycache__/
+*.pyc

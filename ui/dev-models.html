@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<title>Проверка 3D-моделей</title>
+<link rel="stylesheet" href="app.css">
+<script type="importmap">
+{ "imports": { "three": "/vendor/three.module.min.js", "three/addons/": "/vendor/" } }
+</script>
+<style>
+  body { overflow: auto; }
+  .grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; padding: 12px; }
+  .v { height: 380px; background: #fff; border-radius: 14px; position: relative; box-shadow: var(--sh); }
+  .v b { position: absolute; left: 12px; top: 8px; z-index: 2; font: 600 13px var(--font); color: #6e6e73; }
+</style>
+</head>
+<body>
+<div class="grid" id="g"></div>
+<script type="module">
+// Служебная страница: модель с нескольких фиксированных ракурсов, без анимации.
+// /dev-models.html?model=laptop&views=hero,front,back,left,top,closeup
+import { mountView } from './scenes.js';
+const q = new URLSearchParams(location.search);
+const model = q.get('model') || 'laptop';
+const lap = model === 'laptop';
+const V = {
+  hero: [[6.3, 5.3, 7.7], [0, 0.7, -0.3], -0.5, true],
+  front: [[0, 2.6, 7.8], [0, 0.9, -0.3], 0, false],
+  back: [[0.6, 2.8, -7.8], [0, 0.9, -0.3], 0, false],
+  left: [[-7.6, 2.6, 0.8], [0, 0.8, -0.3], 0, false],
+  right: [[7.6, 2.6, 0.8], [0, 0.8, -0.3], 0, false],
+  top: [[0, 8.6, 0.9], [0, 0, 0], 0, false],
+  closeup: [[1.1, 1.9, 2.7], [-0.2, 0.25, -0.2], 0, false],
+  three: [[-5.6, 3.4, 5.6], [0, 0.6, -0.3], 0, false],
+};
+const list = (q.get('views') || (lap ? 'hero,front,back,left,top,closeup' : 'hero,top,front,three')).split(',');
+const info = { frac: 0.69, free: 280e9, total: 1000e9, root: 'C:\\', model: 'Samsung SSD 990 EVO Plus 1TB', sizeText: '930.4 ГБ', animate: false };
+for (const v of list) {
+  const [cam, target, rotY, ring] = V[v] || V.hero;
+  const d = document.createElement('div'); d.className = 'v'; d.innerHTML = `<b>${model} · ${v}</b>`;
+  document.getElementById('g').appendChild(d);
+  mountView(d, model.toUpperCase(), { cam: lap ? cam : cam.map(x => x * 1.05), target: lap ? target : [0, 0, 0], rotY, ring, info, animate: false });
+}
+</script>
+</body>
+</html>
