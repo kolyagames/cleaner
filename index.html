@@ -1,9 +1,9 @@
 <!doctype html>
-<html lang="uk">
+<html lang="en">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Не вдається отримати доступ до сайту</title>
+<title>This site can’t be reached</title>
 <style>
   :root {
     --bg: #202124;
@@ -99,6 +99,9 @@
     background: #000;
   }
 
+  html[dir="rtl"] ul { padding-left: 0; padding-right: 22px; }
+  html[dir="rtl"] .icon { margin: -14px -23px -14px 0; }
+
   @media (max-width: 480px) {
     h1 { font-size: 20px; }
     .buttons { flex-direction: column-reverse; align-items: stretch; }
@@ -110,18 +113,18 @@
 
 <div id="error">
   <img class="icon" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEQAAABECAYAAAA4E5OyAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAEFSURBVHhe7ddRCoJAFEDRbCUFLTHBJQi65/rz41LMTM7jKd0D/qg5cHmDOdzuj9dFmytP/DuDgEHAIGAQMAgYBAwCBgGDgEHAIGAQMAgMEZ//6zLzVJjnOPHULk4IGATCt8yeka55Ts09LZwQMAicPshznLZjXebt+NXpg/RmEEgL0mO8I6QFOSqDQNofs9Z7Wn17ZokTAgaBtC0Toce6TggYBAwCBgGDgEHAIGAQMAgYBAwCh/iWqf3MLz2rdd1PnBAwCKRtmZp7qPSb0vUaTggYBNK2TIQe6zohYBAwCBgEDALhb5ksvmU6MQiEbJkzc0LAIGAQMAgYBAwCBgGDgEHAIPAGhfpVRNVn5KwAAAAASUVORK5CYII=" alt="" width="68" height="68">
-  <h1>Не вдається отримати доступ до сайту</h1>
-  <p>Перевищено час очікування відповіді від сайту <b>pnrtscr.com</b>.</p>
-  <p>Спробуйте виконати наступне:</p>
+  <h1 id="t-h1"></h1>
+  <p id="t-p1"></p>
+  <p id="t-p2"></p>
   <ul>
-    <li><a href="#">Перевірте підключення до інтернету.</a></li>
-    <li><a href="#">Перевірте налаштування проксі-сервера та брандмауера.</a></li>
-    <li><a href="#">Виконайте діагностику мережі Windows</a></li>
+    <li><a href="#" id="t-l1"></a></li>
+    <li><a href="#" id="t-l2"></a></li>
+    <li><a href="#" id="t-l3"></a></li>
   </ul>
   <div class="code">ERR_TIMED_OUT</div>
   <div class="buttons">
-    <button class="primary" id="reload">Перезавантажити</button>
-    <button class="secondary">Відомості</button>
+    <button class="primary" id="reload"></button>
+    <button class="secondary" id="t-details"></button>
   </div>
 </div>
 
@@ -130,6 +133,65 @@
 </div>
 
 <script>
+  // Тексты на разных языках. Язык берётся из настроек браузера, по умолчанию English.
+  const T = {
+    en: { title: "This site can’t be reached", h1: "This site can’t be reached", p1: "{d} took too long to respond.", p2: "Try the following:", l1: "Check your internet connection.", l2: "Check the proxy and firewall settings.", l3: "Run the Windows Network Diagnostics", reload: "Reload", details: "Details" },
+    uk: { title: "Не вдається отримати доступ до сайту", h1: "Не вдається отримати доступ до сайту", p1: "Перевищено час очікування відповіді від сайту {d}.", p2: "Спробуйте виконати наступне:", l1: "Перевірте підключення до інтернету.", l2: "Перевірте налаштування проксі-сервера та брандмауера.", l3: "Виконайте діагностику мережі Windows", reload: "Перезавантажити", details: "Відомості" },
+    ru: { title: "Не удаётся получить доступ к сайту", h1: "Не удаётся получить доступ к сайту", p1: "Превышено время ожидания ответа от сайта {d}.", p2: "Попробуйте сделать следующее:", l1: "Проверьте подключение к интернету.", l2: "Проверьте настройки прокси-сервера и брандмауэра.", l3: "Выполните диагностику сети в Windows", reload: "Перезагрузить", details: "Сведения" },
+    be: { title: "Не атрымліваецца атрымаць доступ да сайта", h1: "Не атрымліваецца атрымаць доступ да сайта", p1: "Перавышаны час чакання адказу ад сайта {d}.", p2: "Паспрабуйце выканаць наступнае:", l1: "Праверце падключэнне да інтэрнэту.", l2: "Праверце налады проксі-сервера і брандмаўэра.", l3: "Выканайце дыягностыку сеткі ў Windows", reload: "Перазагрузіць", details: "Звесткі" },
+    kk: { title: "Сайтқа кіру мүмкін емес", h1: "Сайтқа кіру мүмкін емес", p1: "{d} сайтынан жауап күту уақыты аяқталды.", p2: "Мына әрекеттерді орындап көріңіз:", l1: "Интернет байланысын тексеріңіз.", l2: "Прокси-сервер мен брандмауэр параметрлерін тексеріңіз.", l3: "Windows желісінің диагностикасын іске қосыңыз", reload: "Қайта жүктеу", details: "Мәліметтер" },
+    pl: { title: "Nie można otworzyć tej strony", h1: "Nie można otworzyć tej strony", p1: "Serwer {d} nie odpowiedział na czas.", p2: "Spróbuj wykonać następujące czynności:", l1: "Sprawdź połączenie z internetem.", l2: "Sprawdź ustawienia serwera proxy i zapory.", l3: "Uruchom diagnostykę sieci Windows", reload: "Odśwież", details: "Szczegóły" },
+    cs: { title: "Tuto stránku nelze zobrazit", h1: "Tuto stránku nelze zobrazit", p1: "Web {d} neodpověděl včas.", p2: "Zkuste následující:", l1: "Zkontrolujte připojení k internetu.", l2: "Zkontrolujte nastavení proxy serveru a firewallu.", l3: "Spusťte diagnostiku sítě ve Windows", reload: "Znovu načíst", details: "Podrobnosti" },
+    de: { title: "Diese Website ist nicht erreichbar", h1: "Diese Website ist nicht erreichbar", p1: "Die Antwort von {d} hat zu lange gedauert.", p2: "Versuchen Sie Folgendes:", l1: "Überprüfen Sie Ihre Internetverbindung.", l2: "Überprüfen Sie die Proxy- und Firewall-Einstellungen.", l3: "Netzwerkdiagnose in Windows ausführen", reload: "Neu laden", details: "Details" },
+    nl: { title: "Deze site kan niet worden bereikt", h1: "Deze site kan niet worden bereikt", p1: "{d} heeft te lang gedaan over het antwoord.", p2: "Probeer het volgende:", l1: "Controleer je internetverbinding.", l2: "Controleer de proxy- en firewallinstellingen.", l3: "Voer de netwerkdiagnose van Windows uit", reload: "Opnieuw laden", details: "Details" },
+    fr: { title: "Impossible d’accéder au site", h1: "Impossible d’accéder au site", p1: "Le délai de réponse de {d} a été dépassé.", p2: "Essayez les actions suivantes :", l1: "Vérifiez votre connexion Internet.", l2: "Vérifiez les paramètres du proxy et du pare-feu.", l3: "Exécuter le diagnostic réseau Windows", reload: "Actualiser", details: "Détails" },
+    es: { title: "No se puede acceder a este sitio", h1: "No se puede acceder a este sitio", p1: "Se agotó el tiempo de espera de respuesta de {d}.", p2: "Prueba lo siguiente:", l1: "Comprueba tu conexión a Internet.", l2: "Comprueba la configuración del proxy y del firewall.", l3: "Ejecutar el diagnóstico de red de Windows", reload: "Recargar", details: "Detalles" },
+    pt: { title: "Não é possível acessar este site", h1: "Não é possível acessar este site", p1: "O tempo de resposta de {d} esgotou.", p2: "Tente o seguinte:", l1: "Verifique sua conexão com a Internet.", l2: "Verifique as configurações de proxy e firewall.", l3: "Execute o diagnóstico de rede do Windows", reload: "Recarregar", details: "Detalhes" },
+    it: { title: "Impossibile raggiungere il sito", h1: "Impossibile raggiungere il sito", p1: "Il tempo di attesa della risposta di {d} è scaduto.", p2: "Prova quanto segue:", l1: "Controlla la connessione a Internet.", l2: "Controlla le impostazioni di proxy e firewall.", l3: "Esegui la diagnostica di rete di Windows", reload: "Ricarica", details: "Dettagli" },
+    ro: { title: "Nu se poate accesa site-ul", h1: "Nu se poate accesa site-ul", p1: "Timpul de așteptare a răspunsului de la {d} a expirat.", p2: "Încercați următoarele:", l1: "Verificați conexiunea la internet.", l2: "Verificați setările proxy și ale firewall-ului.", l3: "Rulați diagnosticarea rețelei Windows", reload: "Reîncărcați", details: "Detalii" },
+    hu: { title: "Nem érhető el ez a webhely", h1: "Nem érhető el ez a webhely", p1: "A(z) {d} webhely túl sokáig nem válaszolt.", p2: "Próbálja ki a következőket:", l1: "Ellenőrizze az internetkapcsolatot.", l2: "Ellenőrizze a proxy- és tűzfalbeállításokat.", l3: "Futtassa a Windows hálózati diagnosztikáját", reload: "Újratöltés", details: "Részletek" },
+    sv: { title: "Webbplatsen kan inte nås", h1: "Webbplatsen kan inte nås", p1: "Det tog för lång tid för {d} att svara.", p2: "Prova följande:", l1: "Kontrollera din internetanslutning.", l2: "Kontrollera proxy- och brandväggsinställningarna.", l3: "Kör Windows nätverksdiagnostik", reload: "Ladda om", details: "Information" },
+    tr: { title: "Bu siteye ulaşılamıyor", h1: "Bu siteye ulaşılamıyor", p1: "{d} sitesinden yanıt alınamadı, zaman aşımına uğradı.", p2: "Şunları deneyin:", l1: "İnternet bağlantınızı kontrol edin.", l2: "Proxy ve güvenlik duvarı ayarlarını kontrol edin.", l3: "Windows ağ tanılamasını çalıştırın", reload: "Yeniden yükle", details: "Ayrıntılar" },
+    el: { title: "Δεν είναι δυνατή η πρόσβαση στον ιστότοπο", h1: "Δεν είναι δυνατή η πρόσβαση στον ιστότοπο", p1: "Έληξε ο χρόνος αναμονής για απάντηση από το {d}.", p2: "Δοκιμάστε τα εξής:", l1: "Ελέγξτε τη σύνδεσή σας στο internet.", l2: "Ελέγξτε τις ρυθμίσεις proxy και τείχους προστασίας.", l3: "Εκτελέστε τη διάγνωση δικτύου των Windows", reload: "Ανανέωση", details: "Λεπτομέρειες" },
+    ja: { title: "サイトにアクセスできません", h1: "サイトにアクセスできません", p1: "{d} からの応答がタイムアウトしました。", p2: "次の操作を試してください:", l1: "インターネット接続を確認してください。", l2: "プロキシサーバーとファイアウォールの設定を確認してください。", l3: "Windows のネットワーク診断を実行する", reload: "再読み込み", details: "詳細" },
+    ko: { title: "사이트에 연결할 수 없음", h1: "사이트에 연결할 수 없음", p1: "{d}에서 응답하는 데 시간이 너무 오래 걸렸습니다.", p2: "다음을 시도해 보세요:", l1: "인터넷 연결을 확인하세요.", l2: "프록시 및 방화벽 설정을 확인하세요.", l3: "Windows 네트워크 진단 실행", reload: "새로고침", details: "세부정보" },
+    zh: { title: "无法访问此网站", h1: "无法访问此网站", p1: "{d} 响应超时。", p2: "请尝试以下操作：", l1: "检查网络连接。", l2: "检查代理服务器和防火墙设置。", l3: "运行 Windows 网络诊断", reload: "重新加载", details: "详细信息" },
+    ar: { title: "تعذّر الوصول إلى الموقع", h1: "تعذّر الوصول إلى الموقع", p1: "انتهت مهلة الاستجابة من {d}.", p2: "جرّب ما يلي:", l1: "تحقق من اتصالك بالإنترنت.", l2: "تحقق من إعدادات الخادم الوكيل وجدار الحماية.", l3: "تشغيل تشخيص الشبكة في Windows", reload: "إعادة تحميل", details: "التفاصيل", rtl: true },
+    he: { title: "לא ניתן להגיע לאתר", h1: "לא ניתן להגיע לאתר", p1: "פג הזמן הקצוב לתגובה מ-{d}.", p2: "נסו את הפעולות הבאות:", l1: "בדקו את חיבור האינטרנט.", l2: "בדקו את הגדרות שרת ה-proxy וחומת האש.", l3: "הפעלת אבחון רשת ב-Windows", reload: "טען מחדש", details: "פרטים", rtl: true },
+    hi: { title: "यह साइट नहीं खुल रही", h1: "यह साइट नहीं खुल रही", p1: "{d} से जवाब मिलने में बहुत समय लग गया।", p2: "यह आज़माएँ:", l1: "अपना इंटरनेट कनेक्शन जाँचें।", l2: "प्रॉक्सी और फ़ायरवॉल सेटिंग जाँचें।", l3: "Windows नेटवर्क डायग्नोस्टिक चलाएँ", reload: "रीलोड करें", details: "विवरण" },
+    th: { title: "ไม่สามารถเข้าถึงเว็บไซต์นี้ได้", h1: "ไม่สามารถเข้าถึงเว็บไซต์นี้ได้", p1: "{d} ใช้เวลาตอบสนองนานเกินไป", p2: "ลองทำดังนี้:", l1: "ตรวจสอบการเชื่อมต่ออินเทอร์เน็ต", l2: "ตรวจสอบการตั้งค่าพร็อกซีและไฟร์วอลล์", l3: "เรียกใช้การวินิจฉัยเครือข่ายของ Windows", reload: "โหลดใหม่", details: "รายละเอียด" },
+    vi: { title: "Không thể truy cập trang web này", h1: "Không thể truy cập trang web này", p1: "{d} phản hồi quá thời gian chờ.", p2: "Hãy thử các cách sau:", l1: "Kiểm tra kết nối internet.", l2: "Kiểm tra cài đặt proxy và tường lửa.", l3: "Chạy chẩn đoán mạng của Windows", reload: "Tải lại", details: "Chi tiết" },
+    id: { title: "Situs tidak dapat dijangkau", h1: "Situs tidak dapat dijangkau", p1: "{d} membutuhkan waktu terlalu lama untuk merespons.", p2: "Coba langkah berikut:", l1: "Periksa koneksi internet Anda.", l2: "Periksa pengaturan proxy dan firewall.", l3: "Jalankan diagnostik jaringan Windows", reload: "Muat ulang", details: "Detail" }
+  };
+
+  // Выбор языка: сначала языки браузера по порядку, потом English
+  function pickLang() {
+    const list = (navigator.languages && navigator.languages.length) ? navigator.languages : [navigator.language || 'en'];
+    for (const raw of list) {
+      const code = String(raw).toLowerCase();
+      if (T[code]) return code;
+      const base = code.split('-')[0];
+      if (T[base]) return base;
+    }
+    return 'en';
+  }
+
+  (function applyLang() {
+    const code = pickLang();
+    const t = T[code];
+    document.documentElement.lang = code;
+    document.documentElement.dir = t.rtl ? 'rtl' : 'ltr';
+    document.title = t.title;
+    document.getElementById('t-h1').textContent = t.h1;
+    document.getElementById('t-p1').innerHTML = t.p1.replace('{d}', '<b>pnrtscr.com</b>');
+    document.getElementById('t-p2').textContent = t.p2;
+    document.getElementById('t-l1').textContent = t.l1;
+    document.getElementById('t-l2').textContent = t.l2;
+    document.getElementById('t-l3').textContent = t.l3;
+    document.getElementById('reload').textContent = t.reload;
+    document.getElementById('t-details').textContent = t.details;
+  })();
+
   const reloadBtn = document.getElementById('reload');
   const errorBox = document.getElementById('error');
   const scare = document.getElementById('scare');
